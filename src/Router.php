@@ -67,7 +67,7 @@ class Router
     {
         $route = $this->app->get(Route::class);
 
-        include_once __DIR__ . '/../config/routes.php';
+        include_once $this->app->basePath() . '/config/routes.php';
 
         return $route->getRoutes();
     }
