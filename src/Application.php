@@ -10,6 +10,7 @@ use Hope\Http\RequestProvider;
 use Hope\Outputer\OutputerProvider;
 use Hope\Providers\ApplicationProvider;
 use Hope\Router\Dispatcher;
+use Closure;
 
 /**
  * Hope Application base class
@@ -32,7 +33,7 @@ class Application extends DIContainer
     ];
 
     /** @var string Route file definition */
-    private $routeFile;
+    private $routes;
 
     /**
      * Initialization
@@ -88,9 +89,30 @@ class Application extends DIContainer
         }
     }
 
-    public function setRouteFile(string $filename)
+    /**
+     * Define routes of Hope
+     *
+     * @param string|Closure $routes Pass file name or a Closure of the Routes definitions
+     *
+     * @return void
+     */
+    public function setRoute($routes)
     {
-        $this->routeFile = $filename;
+        if (is_string($routes)) {
+            if (!file_exists($routes)) {
+                throw new \Exception("Route definition file don't exist", 1);
+            }
+
+            $routes = function(\Hope\Route $route) use ($routes)
+            {
+                include $routes;
+            };
+        }
+        else if (!is_callable($routes)) {
+            throw new \Exception("You should pass a filename string or a Closure with routes definitions", 1);
+        }
+
+        $this->routes = $routes;
     }
 
     /**
@@ -100,11 +122,7 @@ class Application extends DIContainer
      */
     private function registerRoutes()
     {
-        if (!file_exists($this->routeFile)) {
-            throw new \Exception("Route file definition don't exist", 1);
-        }
-
-        $this->call([Router::class, 'register'], [$this->routeFile]);
+        $this->call([Router::class, 'register'], [$this->routes]);
     }
 
     /**

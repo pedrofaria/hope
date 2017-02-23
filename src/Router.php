@@ -26,13 +26,15 @@ class Router
     /**
      * Register all routes to Hope
      *
+     * @param string|Closure $routesDef Pass file name or a Closure of the Routes definitions
+     *
      * @return void
      */
-    public function register($routeFile)
+    public function register($routesDef)
     {
         $routeCollector = $this->getRouteCollector();
 
-        $routes = $this->getConfiguredRoutes($routeCollector, $routeFile);
+        $routes = $this->getConfiguredRoutes($routeCollector, $routesDef);
 
         foreach ($routes as $route) {
             $routeCollector->addRoute($route[0], $route[1], $route[2]);
@@ -60,14 +62,15 @@ class Router
      * Get Routes defined by config/routes.php file
      *
      * @param \FastRoute\RouteCollector $routeCollector Route Collector.
+     * @param string|Closure $routesDef Pass file name or a Closure of the Routes definitions
      *
      * @return array List of Routes.
      */
-    private function getConfiguredRoutes(\FastRoute\RouteCollector $routeCollector, string $routeFile)
+    private function getConfiguredRoutes(\FastRoute\RouteCollector $routeCollector, $routesDef)
     {
         $route = $this->app->get(Route::class);
 
-        include_once $routeFile;
+        $routesDef->call($this, $route);
 
         return $route->getRoutes();
     }
