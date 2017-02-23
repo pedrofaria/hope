@@ -10,11 +10,28 @@ TODO!
 
 ***
 
-## Configuration
+## Usage
+
+Very simple usage of Hope microframework.
+
+```php
+$app = new Hope\Application;
+
+$app->setRoute(function(Hope\Route $route) {
+    $route->add('GET', '/ping', function() {
+        return ['data' => 'pong'];
+    });
+});
+
+$app->bootstrap();
+$app->run();
+```
+
+And that's it!
 
 ### Routes
 
-This applications is already configured to attend the test, but if you want create new endpoints. All routes are defined at `config/routes.php`.
+All routes are defined with the method `setRoute`. You can pass a closure (above) or a file name with the route definition.
 
 Map all your routes to your actions.
 
@@ -48,13 +65,11 @@ $route->add('GET', '/ping', function () {
 
 For more informations, access https://github.com/nikic/FastRoute 
 
-## Extend
-
 ### Providers
 
 You can extends or replace some funcionality of Hope using the Dependency Injection system. Just two steps and every thing is running.
 
-1) Create your own Provider
+1) Create your own Provider.
 
 ```php
 <?php
@@ -71,14 +86,16 @@ class MyRequestProvider implements Hope\Contracts\ProviderInterface
 }
 ```
 
-2) Add it at `config/providers.php`
+2) Add it with the method `addExternalProviders`.
 
 ```php
-<?php
-return [
-    App\Providers\MyRequestProvider::class,
-];
+$app->addExternalProviders([
+    App\Providers\YourProviderClassProvider::class,
+]);
+
 ```
+
+CAUTION: This method must stay before `bootstrap()`.
 
 ## Running Tests
 
