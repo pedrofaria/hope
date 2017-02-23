@@ -1,6 +1,8 @@
 # Hope
 
-Hope PHP microframework.
+Hope is a very lightweight PHP microframework.
+
+Check a [example of Hope application](https://github.com/pedrofaria/hope-test-app/tree/develop)
 
 ## Installation
 
@@ -82,11 +84,11 @@ return [
 
 Codeception was chosen on this project to support all tests. To run, use the command below:
 
-`$ docker-compose exec php vendor/bin/codecept run unit`
+`$ vendor/bin/codecept run unit`
 
 If you want run with code coverage, use the follow command and the HTML report will be available at `tests/_output/coverage`.
 
-`$ docker-compose exec php vendor/bin/codecept run unit --coverage --coverage-html`
+`$ vendor/bin/codecept run unit --coverage --coverage-html`
 
 
 ## Third-party libraries
@@ -107,7 +109,3 @@ If you want run with code coverage, use the follow command and the HTML report w
 - [Codeception](http://codeception.com)
 
     Complete test environment with the best mock library IMHO. ([AspectMock](https://github.com/Codeception/AspectMock))
-00
-- [Fractal](http://fractal.thephpleague.com/)
-
-    Bring standard to JSON responses. I really like to use fractals with API systems.
