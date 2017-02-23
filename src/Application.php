@@ -5,7 +5,6 @@ use Hope\Contracts\HttpExceptionInterface;
 use Hope\Contracts\OutputerInterface;
 use Hope\Contracts\ProviderInterface;
 use Hope\DIContainer;
-use Hope\Database\DatabaseProvider;
 use Hope\Exceptions\InvalidProviderException;
 use Hope\Http\RequestProvider;
 use Hope\Outputer\OutputerProvider;
@@ -83,36 +82,15 @@ class Application extends DIContainer
     }
 
     /**
-     * Get configuration data
+     * Define externals providers
      *
-     * @param string $key Config item.
+     * @param array $providers Providers list
      *
-     * @return mixed Config value
+     * @return void
      */
-    public static function config(string $key = null)
+    private function addExternalProviders(array $providers)
     {
-        static $config;
-
-        if (is_null($config)) {
-            $config = require $this->basePath() . '/config/config.php';
-        }
-
-        if ($key) {
-            return isset($config[$key]) ? $config[$key] : null;
-        }
-
-        return $config;
-    }
-
-    /**
-     * Get all providers
-     *
-     * @return array List of providers
-     */
-    private function loadProvidersList()
-    {
-        $app_providers = include $this->basePath() . '/config/providers.php';
-        return $this->providers + $app_providers;
+        $this->providers += $providers;
     }
 
     /**
@@ -124,7 +102,7 @@ class Application extends DIContainer
      */
     private function registerProviders()
     {
-        foreach ($this->loadProvidersList() as $provider) {
+        foreach ($this->providers as $provider) {
             if (!in_array(ProviderInterface::class, class_implements($provider))) {
                 throw new InvalidProviderException(
                     "Class '{$provider}' SHOULD implement ProviderInterface!"
