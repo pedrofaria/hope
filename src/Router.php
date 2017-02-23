@@ -28,11 +28,11 @@ class Router
      *
      * @return void
      */
-    public function register()
+    public function register($routeFile)
     {
         $routeCollector = $this->getRouteCollector();
 
-        $routes = $this->getConfiguredRoutes($routeCollector);
+        $routes = $this->getConfiguredRoutes($routeCollector, $routeFile);
 
         foreach ($routes as $route) {
             $routeCollector->addRoute($route[0], $route[1], $route[2]);
@@ -63,11 +63,11 @@ class Router
      *
      * @return array List of Routes.
      */
-    private function getConfiguredRoutes(\FastRoute\RouteCollector $routeCollector)
+    private function getConfiguredRoutes(\FastRoute\RouteCollector $routeCollector, string $routeFile)
     {
         $route = $this->app->get(Route::class);
 
-        include_once $this->app->basePath() . '/config/routes.php';
+        include_once $routeFile;
 
         return $route->getRoutes();
     }

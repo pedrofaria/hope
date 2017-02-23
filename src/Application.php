@@ -31,15 +31,14 @@ class Application extends DIContainer
         OutputerProvider::class
     ];
 
+    /** @var string Route file definition */
+    private $routeFile;
+
     /**
      * Initialization
      */
-    public function __construct(string $basePath = null)
+    public function __construct()
     {
-        if (isset($basePath)) {
-            $this->setBasePath($basePath);
-        }
-
         $this->initContainer();
         $this->registerBaseBindings();
     }
@@ -59,36 +58,13 @@ class Application extends DIContainer
     }
 
     /**
-     * Set the base path for the application.
-     *
-     * @param  string  $basePath
-     * @return $this
-     */
-    public function setBasePath($basePath)
-    {
-        $this->basePath = rtrim($basePath, '\/');
-
-        return $this;
-    }
-
-    /**
-     * Get the base path of the Laravel installation.
-     *
-     * @return string
-     */
-    public function basePath()
-    {
-        return $this->basePath;
-    }
-
-    /**
      * Define externals providers
      *
      * @param array $providers Providers list
      *
      * @return void
      */
-    private function addExternalProviders(array $providers)
+    public function addExternalProviders(array $providers)
     {
         $this->providers += $providers;
     }
@@ -112,6 +88,11 @@ class Application extends DIContainer
         }
     }
 
+    public function setRouteFile(string $filename)
+    {
+        $this->routeFile = $filename;
+    }
+
     /**
      * Registration of Routes
      *
@@ -119,7 +100,11 @@ class Application extends DIContainer
      */
     private function registerRoutes()
     {
-        $this->call([Router::class, 'register']);
+        if (!file_exists($this->routeFile)) {
+            throw new \Exception("Route file definition don't exist", 1);
+        }
+
+        $this->call([Router::class, 'register'], [$this->routeFile]);
     }
 
     /**
