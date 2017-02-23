@@ -8,7 +8,7 @@ namespace Hope\Http;
  *
  * @author Pedro Faria <eu@eusouopedro.com>
  */
-abstract Controller
+abstract class Controller
 {
     protected $app;
     protected $request;
