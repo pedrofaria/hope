@@ -1,6 +1,6 @@
 <?php
 
-namespace Hope\Providers;
+namespace Hope;
 
 use Hope\Application;
 use Hope\Contracts\ProviderInterface;

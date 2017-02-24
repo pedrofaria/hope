@@ -8,7 +8,7 @@ use Hope\DIContainer;
 use Hope\Exceptions\InvalidProviderException;
 use Hope\Http\RequestProvider;
 use Hope\Outputer\OutputerProvider;
-use Hope\Providers\ApplicationProvider;
+use Hope\ApplicationProvider;
 use Hope\Router\Dispatcher;
 use Closure;
 
