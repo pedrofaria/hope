@@ -1,5 +1,9 @@
 /vendor/
 .idea/
 
+#Codeception specific
+/tests/_temp/*
+/tests/_log/*
+
 # ignore lock file since we have no extra dependencies
 composer.lock
