@@ -1,6 +1,7 @@
 <?php
-namespace Hope;
+namespace Hope\Router;
 
+use Hope\Application;
 use Hope\Router\RouteCollector;
 
 /**

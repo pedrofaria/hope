@@ -5,7 +5,7 @@ use \Hope\Application;
 use \Hope\Exceptions\MethodNotAllowedException;
 use \Hope\Exceptions\NotFoundException;
 use \Hope\Http\Request;
-use \Hope\Router;
+use \Hope\Router\Router;
 
 /**
  * Router Dispatcher class
