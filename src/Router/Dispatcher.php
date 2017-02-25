@@ -48,20 +48,24 @@ class Dispatcher
      */
     public function dispatch()
     {
-        $routeInfo = $this->dispatcher->dispatch(
-            $this->request->getMethod(),
-            $this->request->getUriForRouter()
-        );
+        try {
+            $routeInfo = $this->dispatcher->dispatch(
+                $this->request->getMethod(),
+                $this->request->getUriForRouter()
+            );
 
-        switch ($routeInfo[0]) {
-            case \FastRoute\Dispatcher::NOT_FOUND:
-                throw new NotFoundException;
-            case \FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
-                throw new MethodNotAllowedException;
+            $handler = $routeInfo->handler;
+            $parameters = $routeInfo->variables;
+
+            if ($routeInfo->data) {
+                // @TODO check if there is request for middlewares
+            }
+            
+            return $this->app->call($handler, $parameters);
+        } catch (\FastRoute\Exception\HttpNotFoundException $e) {
+            throw new NotFoundException;
+        } catch (\FastRoute\Exception\HttpMethodNotAllowedException $e) {
+            throw new MethodNotAllowedException;
         }
-
-        $handler = $routeInfo[1];
-        $parameters = $routeInfo[2];
-        return $this->app->call($handler, $parameters);
     }
 }

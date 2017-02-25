@@ -1,6 +1,8 @@
 <?php
 namespace Hope;
 
+use Closure;
+use Hope\ApplicationProvider;
 use Hope\Contracts\HttpExceptionInterface;
 use Hope\Contracts\OutputerInterface;
 use Hope\Contracts\ProviderInterface;
@@ -8,9 +10,9 @@ use Hope\DIContainer;
 use Hope\Exceptions\InvalidProviderException;
 use Hope\Http\RequestProvider;
 use Hope\Outputer\OutputerProvider;
-use Hope\ApplicationProvider;
+use Hope\Router\Router;
 use Hope\Router\Dispatcher;
-use Closure;
+use Hope\Router\RouteCollector;
 
 /**
  * Hope Application base class
@@ -103,7 +105,7 @@ class Application extends DIContainer
                 throw new \Exception("Route definition file don't exist", 1);
             }
 
-            $routes = function(\Hope\Route $route) use ($routes)
+            $routes = function(RouteCollector $route) use ($routes)
             {
                 include $routes;
             };
