@@ -7,6 +7,12 @@
             "email": "eu@eusouopedro.com"
         }
     ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/pedrofaria/FastRoute"
+        }
+    ],
     "require": {
         "php": ">=5.6.4",
         "symfony/http-foundation": "^3.2",
