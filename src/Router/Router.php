@@ -1,6 +1,8 @@
 <?php
 namespace Hope;
 
+use Hope\Router\RouteCollector;
+
 /**
  * Router class
  *
@@ -33,12 +35,8 @@ class Router
     public function register($routesDef)
     {
         $routeCollector = $this->getRouteCollector();
-
-        $routes = $this->getConfiguredRoutes($routeCollector, $routesDef);
-
-        foreach ($routes as $route) {
-            $routeCollector->addRoute($route[0], $route[1], $route[2]);
-        }
+        
+        $routesDef($routeCollector);
 
         $this->dispatcher = new \FastRoute\Dispatcher\GroupCountBased(
             $routeCollector->getData()
@@ -52,27 +50,10 @@ class Router
      */
     public function getRouteCollector()
     {
-        return new \FastRoute\RouteCollector(
+        return new RouteCollector(
             new \FastRoute\RouteParser\Std,
             new \FastRoute\DataGenerator\GroupCountBased
         );
-    }
-
-    /**
-     * Get Routes defined by config/routes.php file
-     *
-     * @param \FastRoute\RouteCollector $routeCollector Route Collector.
-     * @param string|Closure $routesDef Pass file name or a Closure of the Routes definitions
-     *
-     * @return array List of Routes.
-     */
-    private function getConfiguredRoutes(\FastRoute\RouteCollector $routeCollector, $routesDef)
-    {
-        $route = $this->app->get(Route::class);
-
-        $routesDef->call($this, $route);
-
-        return $route->getRoutes();
     }
 
     /**
