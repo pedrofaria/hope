@@ -11,8 +11,7 @@
         "php": ">=5.6.4",
         "symfony/http-foundation": "^3.2",
         "php-di/php-di": "^5.4",
-        "nikic/fast-route": "^1.0",
-        "phroute/phroute": "^2.1.0"
+        "pedrofaria/FastRoute": "dev-develop"
     },
     "require-dev": {
         "codeception/codeception": "*",
