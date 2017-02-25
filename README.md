@@ -17,7 +17,7 @@ Very simple usage of Hope microframework.
 ```php
 $app = new Hope\Application;
 
-$app->setRoute(function(Hope\Route $route) {
+$app->setRoute(function(Hope\Router\RouteCollector $route) {
     $route->add('GET', '/ping', function() {
         return ['data' => 'pong'];
     });
@@ -63,7 +63,29 @@ $route->add('GET', '/ping', function () {
 };
 ```
 
-For more informations, access https://github.com/nikic/FastRoute 
+Additionally, you can specify routes inside of a group. All routes defined inside a group will have a common prefix.
+
+For example, defining your routes as:
+
+```php
+$route->addGroup('/admin', function (Hope\Router\RouteCollector $route) {
+    $route->add('GET', '/do-something', 'handler');
+    $route->add('GET', '/do-another-thing', 'handler');
+    $route->add('GET', '/do-something-else', 'handler');
+});
+```
+
+Will have the same result as:
+
+```php
+$route->add('GET', '/admin/do-something', 'handler');
+$route->add('GET', '/admin/do-another-thing', 'handler');
+$route->add('GET', '/admin/do-something-else', 'handler');
+```
+
+Nested groups are also supported, in which case the prefixes of all the nested groups are combined.
+
+For more informations, access https://github.com/pedrofaria/FastRoute 
 
 ### Providers
 
