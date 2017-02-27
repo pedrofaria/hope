@@ -16,19 +16,6 @@ use Hope\Http\Response;
 interface OutputerInterface
 {
     /**
-     * Constructor
-     *
-     * @param Application $app      Hope Aplication.
-     * @param Request     $request  Hope Request.
-     * @param Response    $response Hope Response.
-     */
-    public function __construct(
-        Application $app,
-        Request $request,
-        Response $response
-    );
-
-    /**
      * Send output to client
      *
      * @param mixed $responseData Data to response.
