@@ -2,6 +2,7 @@
 namespace Hope\Router;
 
 use Hope\Contracts\OutputerInterface;
+use Hope\Router\LastMiddleware;
 use \Hope\Application;
 use \Hope\Exceptions\MethodNotAllowedException;
 use \Hope\Exceptions\NotFoundException;
@@ -60,14 +61,29 @@ class Dispatcher
             $handler = $routeInfo->handler;
             $parameters = $routeInfo->variables;
 
-            if ($routeInfo->data) {
-                // @TODO check if there is request for middlewares
-            }
-            
-            $responseData = $this->app->call($handler, $parameters);
-            $response = $this->outputer->buildResponse($responseData);
+            $middlewareController = $this->app->get(MiddlewareController::class);
 
-            return $this->outputer;
+            // Build middleware class list
+            $middlewareController->add(\App\Middlewares\AuthMiddleware::class);
+
+            // Add route midleware
+            if ($routeInfo->data) {
+                // $middlewareController->add($routeInfo->data);
+            }
+
+            // If there isn't a middlewhere list, execute a basic workflow
+            if ($middlewareController->count() === 0) {
+                $responseData = $this->app->call($handler, $parameters);
+                $response = $this->outputer->buildResponse($responseData);
+
+                return $this->outputer;
+            }
+
+            // run middleware workflow
+            $middlewareController->addLast(LastMiddleware::class);
+            
+            $middlewareController->run($this->request);
+            
         } catch (\FastRoute\Exception\HttpNotFoundException $e) {
             throw new NotFoundException;
         } catch (\FastRoute\Exception\HttpMethodNotAllowedException $e) {

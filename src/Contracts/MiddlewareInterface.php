@@ -13,5 +13,5 @@ interface MiddlewareInterface
      * @param  \Closure  $next
      * @return \Hope\Http\Response
      */
-    public function handle(Request $request, Closure $next)
+    public function handle($request, Closure $next);
 }
