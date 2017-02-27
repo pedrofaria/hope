@@ -1,6 +1,7 @@
 <?php
 namespace Hope\Contracts;
 
+use Hope\Http\Request;
 use \Closure;
 
 interface MiddlewareInterface
@@ -12,5 +13,5 @@ interface MiddlewareInterface
      * @param  \Closure  $next
      * @return \Hope\Http\Response
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
 }
