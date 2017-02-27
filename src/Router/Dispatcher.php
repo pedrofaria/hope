@@ -1,6 +1,7 @@
 <?php
 namespace Hope\Router;
 
+use Hope\Contracts\OutputerInterface;
 use \Hope\Application;
 use \Hope\Exceptions\MethodNotAllowedException;
 use \Hope\Exceptions\NotFoundException;
@@ -19,7 +20,7 @@ class Dispatcher
     private $app;
     private $request;
     private $dispatcher;
-    private $resolver;
+    private $outputer;
 
     /**
      * Constructor
@@ -31,11 +32,13 @@ class Dispatcher
     public function __construct(
         Application $app,
         Request $request,
-        Router $router
+        Router $router,
+        OutputerInterface $outputer
     ) {
         $this->app = $app;
         $this->request = $request;
         $this->dispatcher = $router->getDispatcher();
+        $this->outputer = $outputer;
     }
 
     /**
@@ -61,7 +64,10 @@ class Dispatcher
                 // @TODO check if there is request for middlewares
             }
             
-            return $this->app->call($handler, $parameters);
+            $responseData = $this->app->call($handler, $parameters);
+            $response = $this->outputer->buildResponse($responseData);
+
+            return $this->outputer;
         } catch (\FastRoute\Exception\HttpNotFoundException $e) {
             throw new NotFoundException;
         } catch (\FastRoute\Exception\HttpMethodNotAllowedException $e) {

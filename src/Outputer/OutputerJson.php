@@ -60,18 +60,28 @@ class OutputerJson implements OutputerInterface
     }
 
     /**
-     * Send output to client
+     * Build Response Object
      *
      * @param mixed $responseData Data to response.
      *
-     * @return void
+     * @return \Hope\Http\Response
      */
-    public function output($responseData)
+    public function buildResponse($responseData)
     {
         $responseData = $this->toJson($responseData);
 
         $this->response->setContent($responseData);
 
+        return $this->response;
+    }
+
+    /**
+     * Sent Response to client
+     *
+     * @return void
+     */
+    public function output()
+    {
         $this->response->send();
     }
 

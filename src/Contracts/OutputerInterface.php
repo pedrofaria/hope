@@ -16,13 +16,20 @@ use Hope\Http\Response;
 interface OutputerInterface
 {
     /**
-     * Send output to client
+     * Build Response object
      *
      * @param mixed $responseData Data to response.
      *
+     * @return \Hope\Http\Response
+     */
+    public function buildResponse($responseData);
+
+    /**
+     * Sent Response to client
+     *
      * @return void
      */
-    public function output($responseData);
+    public function output();
 
     /**
      * Parse HTTP Error and output to client

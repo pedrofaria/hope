@@ -4,7 +4,6 @@ namespace Hope;
 use Closure;
 use Hope\ApplicationProvider;
 use Hope\Contracts\HttpExceptionInterface;
-use Hope\Contracts\OutputerInterface;
 use Hope\Contracts\ProviderInterface;
 use Hope\DIContainer;
 use Hope\Exceptions\InvalidProviderException;
@@ -157,12 +156,10 @@ class Application extends DIContainer
      *
      * @return void
      */
-    public function performResponse(
-        Dispatcher $dispatcher,
-        OutputerInterface $outputer
-    ) {
+    public function performResponse(Dispatcher $dispatcher)
+    {
         try {
-            $responseData = $dispatcher->dispatch();
+            $outputer = $dispatcher->dispatch();
             $outputer->output($responseData);
         } catch (HttpExceptionInterface $e) {
             $outputer->outputHttpError($e);
