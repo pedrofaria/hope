@@ -4,6 +4,10 @@ use AspectMock\Test as test;
 use Hope\Application;
 use Hope\Http\Controller;
 use Hope\Router\Dispatcher;
+use Hope\Router\RouteCollector;
+
+class DummyController extends Controller
+{}
 
 class ControllerTest extends \Codeception\Test\Unit
 {
@@ -17,22 +21,28 @@ class ControllerTest extends \Codeception\Test\Unit
         test::clean(); // remove all registered test doubles
     }
 
+    private function getBaseApp(\Closure $routes)
+    {
+        $app = new Application;
+        $app->setRoute($routes);
+        $app->bootstrap();
+
+        return $app;
+    }
+
     // tests
     public function testControllerShouldReturnAResponseObjIfResponseMethodIsCalled()
     {
-        $routers = [
-            ['GET', '/test', function (Controller $controller) { 
+        $app = $this->getBaseApp(function(RouteCollector $r) {
+            $r->add('GET', '/test', function (DummyController $controller) { 
                 return $controller->response('test', 201);
-            }]
-        ];
-        test::double('Hope\Router', ['getConfiguredRoutes' => $routers]);
-
-        $app = new Application;
-        $app->bootstrap();
+            });
+        });
         $request = $app->get('Hope\Http\Request');
         $request->server->set('REQUEST_URI', '/test');
         $request->server->set('REQUEST_METHOD', 'GET');
-        $responseData = $app->call([Dispatcher::class, 'dispatch']);
+        $ouputer = $app->call([Dispatcher::class, 'dispatch']);
+        $responseData = $ouputer->getResponse();
 
         $this->assertInstanceOf('Hope\Http\Response', $responseData);
         $this->assertEquals('test', $responseData->getContent());
@@ -41,75 +51,61 @@ class ControllerTest extends \Codeception\Test\Unit
 
     public function testControllerGetData()
     {
-        $routers = [
-            ['GET', '/test', function (Controller $controller) { 
+        $app = $this->getBaseApp(function(RouteCollector $r) {
+            $r->add('GET', '/test', function (DummyController $controller) { 
                 $data = [
                     'all' => $controller->getData(),
                     'foo' => $controller->getData('foo')
                 ];
                 return $data;
-            }]
-        ];
-        test::double('Hope\Router', ['getConfiguredRoutes' => $routers]);
+            });
+        });
 
-        $app = new Application;
-        $app->bootstrap();
         $request = $app->get('Hope\Http\Request');
         $request->server->set('REQUEST_URI', '/test?foo=bar');
         $request->server->set('REQUEST_METHOD', 'GET');
         $request->query->set('foo', 'bar');
-        $responseData = $app->call([Dispatcher::class, 'dispatch']);
+        $ouputer = $app->call([Dispatcher::class, 'dispatch']);
+        $responseData = $ouputer->getResponse();
 
-        $data = [
-            'all' => ['foo' => 'bar'],
-            'foo' => 'bar'
-        ];
-        $this->assertEquals($data, $responseData);
+        $data = '{"all":{"foo":"bar"},"foo":"bar"}';
+        $this->assertEquals($data, $responseData->getContent());
     }
 
     public function testControllerPostData()
     {
-        $routers = [
-            ['GET', '/test', function (Controller $controller) { 
+        $app = $this->getBaseApp(function(RouteCollector $r) {
+            $r->add('GET', '/test', function (DummyController $controller) { 
                 $data = [
                     'all' => $controller->postData(),
                     'foo' => $controller->postData('foo')
                 ];
                 return $data;
-            }]
-        ];
-        test::double('Hope\Router', ['getConfiguredRoutes' => $routers]);
-
-        $app = new Application;
-        $app->bootstrap();
+            });
+        });
         $request = $app->get('Hope\Http\Request');
         $request->server->set('REQUEST_URI', '/test');
         $request->server->set('REQUEST_METHOD', 'GET');
         $request->request->set('foo', 'bar');
-        $responseData = $app->call([Dispatcher::class, 'dispatch']);
+        $ouputer = $app->call([Dispatcher::class, 'dispatch']);
+        $responseData = $ouputer->getResponse();
 
-        $data = [
-            'all' => ['foo' => 'bar'],
-            'foo' => 'bar'
-        ];
-        $this->assertEquals($data, $responseData);
+        $data = '{"all":{"foo":"bar"},"foo":"bar"}';
+        $this->assertEquals($data, $responseData->getContent());
     }
 
     public function testSetCache()
     {
-        $routers = [
-            ['GET', '/test', function (Controller $controller) { 
+        $app = $this->getBaseApp(function(RouteCollector $r) {
+            $r->add('GET', '/test', function (DummyController $controller) { 
                 $controller->setCache(['etag' => 'aaAAaaBBbbBB']);
-            }]
-        ];
-        test::double('Hope\Router', ['getConfiguredRoutes' => $routers]);
-
-        $app = new Application;
-        $app->bootstrap();
+            });
+        });
         $request = $app->get('Hope\Http\Request');
         $request->server->set('REQUEST_URI', '/test');
         $request->server->set('REQUEST_METHOD', 'GET');
-        $responseData = $app->call([Dispatcher::class, 'dispatch']);
+        $ouputer = $app->call([Dispatcher::class, 'dispatch']);
+        $response = $ouputer->getResponse();
 
         $response = $app->get('Hope\Http\Response');
 
