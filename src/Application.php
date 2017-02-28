@@ -72,7 +72,7 @@ class Application extends DIContainer
      */
     public function addExternalProviders(array $providers)
     {
-        $this->providers += $providers;
+        $this->providers = array_merge($this->providers, $providers);
     }
 
     /**
