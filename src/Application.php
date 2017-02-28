@@ -198,8 +198,7 @@ class Application extends DIContainer
     public function performResponse(Dispatcher $dispatcher, OutputerInterface $outputer)
     {
         try {
-            $outputer = $dispatcher->dispatch();
-            $outputer->output($responseData);
+            $dispatcher->dispatch();
         } catch (HttpExceptionInterface $e) {
             $outputer->outputHttpError($e);
         } catch (\Exception $e) {

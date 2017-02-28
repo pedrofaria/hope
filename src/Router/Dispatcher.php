@@ -45,7 +45,7 @@ class Dispatcher
     /**
      * Execute the dispatcher
      *
-     * @return mixed Action response data.
+     * @return OutputerInterface Action response data.
      *
      * @throws NotFoundException Page Not Found.
      * @throws MethodNotAllowedException Method Not Allowed.
@@ -74,16 +74,17 @@ class Dispatcher
             if ($middlewareController->count() === 0) {
                 $responseData = $this->app->call($handler, $parameters);
                 $response = $this->outputer->buildResponse($responseData);
-
-                return $this->outputer;
             }
-
             // run middleware workflow
-            $last = $this->app->get(LastMiddleware::class);
-            $last->setRouteInfo($handler, $parameters);
-            $middlewareController->addLast($last);
+            else {
+                $last = $this->app->get(LastMiddleware::class);
+                $last->setRouteInfo($handler, $parameters);
+                $middlewareController->addLast($last);
+                
+                $middlewareController->run($this->request);
+            }
             
-            $middlewareController->run($this->request);
+            $this->outputer->output();
             
             return $this->outputer;
         } catch (\FastRoute\Exception\HttpNotFoundException $e) {
