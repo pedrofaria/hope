@@ -54,11 +54,7 @@ abstract class Controller
      */
     public function postData($key = null, $default = null)
     {
-        if (is_null($key)) {
-            return $this->request->request->all();
-        }
-
-        return $this->request->request->get($key) ?: $default;
+        return $this->request->postData($key, $default);
     }
 
     /**
@@ -71,11 +67,7 @@ abstract class Controller
      */
     public function getData($key = null, $default = null)
     {
-        if (is_null($key)) {
-            return $this->request->query->all();
-        }
-
-        return $this->request->query->get($key) ?: $default;
+        return $this->request->getData($key, $default);
     }
 
     /**

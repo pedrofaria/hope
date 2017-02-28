@@ -30,4 +30,38 @@ class Request extends FoundationRequest
 
         return $uri;
     }
+
+    /**
+     * Get $_POST data. Ommit $key to get all data.
+     *
+     * @param string|null $key     Name of parameter.
+     * @param mixed       $default Default value.
+     *
+     * @return mixed
+     */
+    public function postData($key = null, $default = null)
+    {
+        if (is_null($key)) {
+            return $this->request->all();
+        }
+
+        return $this->request->get($key) ?: $default;
+    }
+
+    /**
+     * Get $_GET data. Ommit $key to get all data.
+     *
+     * @param string|null $key     Name of parameter.
+     * @param mixed       $default Default value.
+     *
+     * @return mixed
+     */
+    public function getData($key = null, $default = null)
+    {
+        if (is_null($key)) {
+            return $this->query->all();
+        }
+
+        return $this->query->get($key) ?: $default;
+    }
 }
