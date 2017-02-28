@@ -37,6 +37,7 @@ class ApplicationTest extends \Codeception\Test\Unit
         $x = test::double('Hope\Application');
         $app = new Application;
         $x->verifyInvoked('initContainer');
+        $x->verifyInvoked('registerBaseBindings');
     }
 
     public function testIfDIIsRunningWell()
@@ -64,6 +65,7 @@ class ApplicationTest extends \Codeception\Test\Unit
     {
         $xapp = test::double('Hope\Application');
         $app = new Application;
+        $app->setRoute(function(Hope\Router\RouteCollector $route) {});
         $app->bootstrap();
         $xapp->verifyInvoked('registerProviders');
         $xapp->verifyInvoked('buildContainer');
@@ -72,10 +74,12 @@ class ApplicationTest extends \Codeception\Test\Unit
 
     public function testRegisterInvalidProviderShouldFail()
     {
-        test::double('Hope\Application', ['loadProvidersList' => [DiExample::class]]);
+        test::double('Hope\Application');
         
         $this->tester->expectException(Hope\Exceptions\InvalidProviderException::class, function() {
             $app = new Application;
+            $app->addExternalProviders([DiExample::class]);
+            $app->setRoute(function(Hope\Router\RouteCollector $route) {});
             $app->bootstrap();
         });
     }
@@ -100,14 +104,12 @@ class ApplicationTest extends \Codeception\Test\Unit
 
     public function testPerformResponseShouldWork()
     {
-        test::double('Hope\Router\Dispatcher', ['dispatch' => ['foo' => 'bar']]);
-        test::double('Hope\Outputer\OutputerJson', ['output' => function() {
-            print 'foobar';
-        }]);
+        test::double('Hope\Router\Dispatcher', ['dispatch' => function() { print 'foobar'; }]);
 
         $this->expectOutputString('foobar');
 
         $app = new Application;
+        $app->setRoute(function(Hope\Router\RouteCollector $route) {});
         $app->bootstrap();
         $app->run();
     }
@@ -124,6 +126,7 @@ class ApplicationTest extends \Codeception\Test\Unit
         $this->expectOutputString('foobar http error');
 
         $app = new Application;
+        $app->setRoute(function(Hope\Router\RouteCollector $route) {});
         $app->bootstrap();
         $app->run();
     }
@@ -140,6 +143,7 @@ class ApplicationTest extends \Codeception\Test\Unit
         $this->expectOutputString('foobar exception');
 
         $app = new Application;
+        $app->setRoute(function(Hope\Router\RouteCollector $route) {});
         $app->bootstrap();
         $app->run();
     }
@@ -147,18 +151,12 @@ class ApplicationTest extends \Codeception\Test\Unit
     public function testOutputerShouldNotHaveOutputIfNoDispatchOutput()
     {
         test::double('Hope\Router\Dispatcher', ['dispatch' => function () {}]);
-        $mock = test::double('Hope\Outputer\OutputerJson');
 
         $this->expectOutputString(null);
 
         $app = new Application;
+        $app->setRoute(function(Hope\Router\RouteCollector $route) {});
         $app->bootstrap();
         $app->run();
-    }
-
-    public function testApplicationConfig()
-    {
-        $config = Application::config();
-        $this->assertInternalType('array', $config);
     }
 }

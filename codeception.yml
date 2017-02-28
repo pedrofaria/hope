@@ -15,8 +15,7 @@ extensions:
 coverage:
     enabled: true
     include:
-        - app/*
-        - hope/*
+        - src/*
 
 modules:
     config:

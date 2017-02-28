@@ -20,7 +20,7 @@ class RouteTest extends \Codeception\Test\Unit
             ['POST', '/test2/{id}', function ($id) { return 'test '.$id; }],
             ['GET', '/test3/{id:\d+}/{slug:[a-z0-9-]+}', function ($id, $slug) { return 'test '.$id .' - '.$slug; }]
         ];
-        test::double('Hope\Router', ['getConfiguredRoutes' => $routers]);
+        test::double('Hope\Router\Router', ['getConfiguredRoutes' => $routers]);
     }
 
     protected function _after()

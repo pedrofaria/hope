@@ -5,7 +5,6 @@ $kernel = \AspectMock\Kernel::getInstance();
 $kernel->init([
     'debug' => true,
     'includePaths' => [
-        __DIR__.'/../../hope',
-        __DIR__.'/../../app'
+        __DIR__.'/../../src'
     ]
 ]);
