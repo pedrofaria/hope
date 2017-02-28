@@ -48,4 +48,10 @@ interface OutputerInterface
      * @return void
      */
     public function outputException(\Exception $exception);
+
+    /**
+     * Return Response object
+     * @return Hope\Http\Response Response object
+     */
+    public function getResponse();
 }

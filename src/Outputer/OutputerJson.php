@@ -121,4 +121,13 @@ class OutputerJson implements OutputerInterface
 
         $this->response->send();
     }
+
+    /**
+     * Return Response object
+     * @return Hope\Http\Response Response object
+     */
+    public function getResponse()
+    {
+        return $this->response;
+    }
 }
