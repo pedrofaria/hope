@@ -63,12 +63,11 @@ class Dispatcher
 
             $middlewareController = $this->app->get(MiddlewareController::class);
 
-            // Build middleware class list
-            $middlewareController->add(\App\Middlewares\AuthMiddleware::class);
+            $middlewareController->add($this->app->getDefaultMiddlewareClasses());
 
             // Add route midleware
             if ($routeInfo->data) {
-                // $middlewareController->add($routeInfo->data);
+                $middlewareController->add($this->app->getMiddlewareClasses($routeInfo->data));
             }
 
             // If there isn't a middlewhere list, execute a basic workflow
@@ -80,10 +79,13 @@ class Dispatcher
             }
 
             // run middleware workflow
-            $middlewareController->addLast(LastMiddleware::class);
+            $last = $this->app->get(LastMiddleware::class);
+            $last->setRouteInfo($handler, $parameters);
+            $middlewareController->addLast($last);
             
             $middlewareController->run($this->request);
             
+            return $this->outputer;
         } catch (\FastRoute\Exception\HttpNotFoundException $e) {
             throw new NotFoundException;
         } catch (\FastRoute\Exception\HttpMethodNotAllowedException $e) {

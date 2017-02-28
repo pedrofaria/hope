@@ -38,13 +38,8 @@ class MiddlewareController
         $this->list[] = $middleware;
     }
 
-    public function addLast($obj)
+    public function addLast(MiddlewareInterface $obj)
     {
-        if (!$obj) {
-            // @TODO create new class exception
-            throw new \Exception('Invalid Middleware class');
-        }
-
         $this->lastMW = $obj;
     }
 
@@ -68,8 +63,7 @@ class MiddlewareController
 
     private function runLast($request)
     {
-        $last = $this->app->get($this->lastMW);
-        return $last->handle($request, function() {});
+        return $this->lastMW->handle($request, function() {});
     }
 
     public function run($request)

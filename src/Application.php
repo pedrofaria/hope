@@ -4,14 +4,15 @@ namespace Hope;
 use Closure;
 use Hope\ApplicationProvider;
 use Hope\Contracts\HttpExceptionInterface;
+use Hope\Contracts\OutputerInterface;
 use Hope\Contracts\ProviderInterface;
 use Hope\DIContainer;
 use Hope\Exceptions\InvalidProviderException;
 use Hope\Http\RequestProvider;
 use Hope\Outputer\OutputerProvider;
-use Hope\Router\Router;
 use Hope\Router\Dispatcher;
 use Hope\Router\RouteCollector;
+use Hope\Router\Router;
 
 /**
  * Hope Application base class
@@ -35,6 +36,9 @@ class Application extends DIContainer
 
     /** @var string Route file definition */
     private $routes;
+
+    private $middlewareList = [];
+    private $defaultMiddlewares = [];
 
     /**
      * Initialization
@@ -88,6 +92,41 @@ class Application extends DIContainer
             }
             $provider::register($this);
         }
+    }
+
+    /**
+     * Add middlewares to Hope
+     *
+     *     $app->addMiddlewares([
+     *         'auth' => App\Middlewares\AuthMiddleware::class
+     *     ]);
+     *
+     * @param array $middlewares Middleware list
+     *
+     * @return void
+     */
+    public function addMiddleware(array $middlewares)
+    {
+        $this->middlewareList = $middlewares;
+    }
+
+    public function defaultMiddleware(array $middlewares)
+    {
+        $this->defaultMiddlewares = $middlewares;
+    }
+
+    public function getDefaultMiddlewareClasses()
+    {
+        return $this->getMiddlewareClasses($this->defaultMiddlewares);
+    }
+
+    public function getMiddlewareClasses(array $middlewares)
+    {
+        $list = [];
+        foreach ($middlewares as $middleware) {
+            $list[] = $this->middlewareList[$middleware];
+        }
+        return $list;
     }
 
     /**
@@ -156,7 +195,7 @@ class Application extends DIContainer
      *
      * @return void
      */
-    public function performResponse(Dispatcher $dispatcher)
+    public function performResponse(Dispatcher $dispatcher, OutputerInterface $outputer)
     {
         try {
             $outputer = $dispatcher->dispatch();
