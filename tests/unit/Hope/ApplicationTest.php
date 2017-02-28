@@ -25,6 +25,15 @@ class ApplicationTest extends \Codeception\Test\Unit
         test::clean(); // remove all registered test doubles
     }
 
+    public function getBaseApp()
+    {
+        $app = new Application;
+        $app->setRoute(function(Hope\Router\RouteCollector $route) {});
+        $app->bootstrap();
+
+        return $app;
+    }
+
     // tests
     public function testHopeApplicationShouldBeInstantiated()
     {
@@ -64,9 +73,7 @@ class ApplicationTest extends \Codeception\Test\Unit
     public function testBootstrapShouldCallRegisterProviders()
     {
         $xapp = test::double('Hope\Application');
-        $app = new Application;
-        $app->setRoute(function(Hope\Router\RouteCollector $route) {});
-        $app->bootstrap();
+        $app = $this->getBaseApp();
         $xapp->verifyInvoked('registerProviders');
         $xapp->verifyInvoked('buildContainer');
         $xapp->verifyInvoked('registerRoutes');
@@ -108,9 +115,7 @@ class ApplicationTest extends \Codeception\Test\Unit
 
         $this->expectOutputString('foobar');
 
-        $app = new Application;
-        $app->setRoute(function(Hope\Router\RouteCollector $route) {});
-        $app->bootstrap();
+        $app = $this->getBaseApp();
         $app->run();
     }
 
@@ -125,9 +130,7 @@ class ApplicationTest extends \Codeception\Test\Unit
 
         $this->expectOutputString('foobar http error');
 
-        $app = new Application;
-        $app->setRoute(function(Hope\Router\RouteCollector $route) {});
-        $app->bootstrap();
+        $app = $this->getBaseApp();
         $app->run();
     }
 
@@ -142,9 +145,7 @@ class ApplicationTest extends \Codeception\Test\Unit
 
         $this->expectOutputString('foobar exception');
 
-        $app = new Application;
-        $app->setRoute(function(Hope\Router\RouteCollector $route) {});
-        $app->bootstrap();
+        $app = $this->getBaseApp();
         $app->run();
     }
 
@@ -154,9 +155,7 @@ class ApplicationTest extends \Codeception\Test\Unit
 
         $this->expectOutputString(null);
 
-        $app = new Application;
-        $app->setRoute(function(Hope\Router\RouteCollector $route) {});
-        $app->bootstrap();
+        $app = $this->getBaseApp();
         $app->run();
     }
 }
