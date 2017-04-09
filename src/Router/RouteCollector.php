@@ -10,7 +10,7 @@ use Hope\Application;
  *
  * @author Pedro Faria <eu@eusouopedro.com>
  */
-class RouteCollector extends \FastRoute\RouteCollector
+class RouteCollector extends \Router\RouteCollector
 {
     /**
      * Add a new route

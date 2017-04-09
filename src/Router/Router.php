@@ -39,7 +39,7 @@ class Router
         
         $routesDef($routeCollector);
 
-        $this->dispatcher = new \FastRoute\Dispatcher\GroupCountBased(
+        $this->dispatcher = new \Router\Dispatcher\GroupCountBased(
             $routeCollector->getData()
         );
     }
@@ -47,20 +47,20 @@ class Router
     /**
      * Create and get RouteCollector
      *
-     * @return \FastRoute\RouteCollector Route Collector
+     * @return \Router\RouteCollector Route Collector
      */
     public function getRouteCollector()
     {
         return new RouteCollector(
-            new \FastRoute\RouteParser\Std,
-            new \FastRoute\DataGenerator\GroupCountBased
+            new \Router\RouteParser\Std,
+            new \Router\DataGenerator\GroupCountBased
         );
     }
 
     /**
      * Get the router dispatcher
      *
-     * @return \FastRoute\Dispatcher\GroupCountBased FastRoute Dispatcher.
+     * @return \Router\Dispatcher\GroupCountBased Router Dispatcher.
      */
     public function getDispatcher()
     {

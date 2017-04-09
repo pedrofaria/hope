@@ -87,9 +87,9 @@ class Dispatcher
             $this->outputer->output();
             
             return $this->outputer;
-        } catch (\FastRoute\Exception\HttpNotFoundException $e) {
+        } catch (\Router\Exception\HttpNotFoundException $e) {
             throw new NotFoundException;
-        } catch (\FastRoute\Exception\HttpMethodNotAllowedException $e) {
+        } catch (\Router\Exception\HttpMethodNotAllowedException $e) {
             throw new MethodNotAllowedException;
         }
     }
