@@ -1,0 +1,27 @@
+{
+  "name": "pedrofaria/hope",
+  "description": "Hope microframework",
+  "version": "1.0.0",
+  "authors": [
+    {
+      "name": "Pedro Faria",
+      "email": "eu@eusouopedro.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.6.4",
+    "symfony/http-foundation": "^3.2",
+    "php-di/php-di": "^5.4",
+    "pedrofaria/router": "^1.0.0"
+  },
+  "require-dev": {
+    "codeception/codeception": "*",
+    "codeception/aspect-mock": "^2.0",
+    "squizlabs/php_codesniffer": "^2.7"
+  },
+  "autoload": {
+    "psr-4": {
+      "Hope\\": "src/"
+    }
+  }
+}
