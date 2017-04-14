@@ -70,7 +70,7 @@ class Dispatcher
                 $middlewareController->add($this->app->getMiddlewareClasses($routeInfo->data));
             }
 
-            // If there isn't a middlewhere list, execute a basic workflow
+            // If there isn't a middleware list, execute a basic workflow
             if ($middlewareController->count() === 0) {
                 $responseData = $this->app->call($handler, $parameters);
                 $response = $this->outputer->buildResponse($responseData);
